@@ -22,7 +22,8 @@ describe('influxdb', () => {
 						host: '127.0.0.1',
 						port: 8086,
 						protocol: 'http',
-						options: undefined
+						options: undefined,
+						subpath: undefined
 					}
 				]
 			});
@@ -42,7 +43,8 @@ describe('influxdb', () => {
 						host: '192.168.0.1',
 						port: 1337,
 						protocol: 'https',
-						options: undefined
+						options: undefined,
+						subpath: undefined
 					}
 				]
 			});
@@ -60,7 +62,102 @@ describe('influxdb', () => {
 						host: '192.168.0.1',
 						port: 8086,
 						protocol: 'http',
-						options: undefined
+						options: undefined,
+						subpath: undefined
+					}
+				]
+			});
+		});
+
+		it('parses single configs with subpaths', () => {
+			expect(
+				(new InfluxDB({
+					database: "foo",
+					host: "192.168.0.1",
+					subpath: "/"
+				}) as any)._options
+			).to.deep.equal({
+				username: "root",
+				password: "root",
+				database: "foo",
+				pool: undefined,
+				schema: [],
+				hosts: [
+					{
+						host: "192.168.0.1",
+						port: 8086,
+						protocol: "http",
+						options: undefined,
+						subpath: '/'
+					}
+				]
+			});
+
+			expect(
+				(new InfluxDB({
+					database: "foo",
+					host: "192.168.0.1",
+					subpath: "/influxdb"
+				}) as any)._options
+			).to.deep.equal({
+				username: "root",
+				password: "root",
+				database: "foo",
+				pool: undefined,
+				schema: [],
+				hosts: [
+					{
+						host: "192.168.0.1",
+						port: 8086,
+						protocol: "http",
+						options: undefined,
+						subpath: '/influxdb'
+					}
+				]
+			});
+
+			expect(
+				(new InfluxDB({
+					database: "foo",
+					host: "192.168.0.1",
+					subpath: "/influxdb/"
+				}) as any)._options
+			).to.deep.equal({
+				username: "root",
+				password: "root",
+				database: "foo",
+				pool: undefined,
+				schema: [],
+				hosts: [
+					{
+						host: "192.168.0.1",
+						port: 8086,
+						protocol: "http",
+						options: undefined,
+						subpath: '/influxdb/'
+					}
+				]
+			});
+
+			expect(
+				(new InfluxDB({
+					database: "foo",
+					host: "192.168.0.1",
+					subpath: "/v1/complicated/url/localhost%3A4200"
+				}) as any)._options
+			).to.deep.equal({
+				username: "root",
+				password: "root",
+				database: "foo",
+				pool: undefined,
+				schema: [],
+				hosts: [
+					{
+						host: "192.168.0.1",
+						port: 8086,
+						protocol: "http",
+						options: undefined,
+						subpath: '/v1/complicated/url/localhost%3A4200'
 					}
 				]
 			});
@@ -82,7 +179,8 @@ describe('influxdb', () => {
 						host: '192.168.0.1',
 						port: 8086,
 						protocol: 'http',
-						options: {ca: null}
+						options: {ca: null},
+						subpath: undefined
 					}
 				]
 			});

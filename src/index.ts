@@ -45,6 +45,8 @@ export interface IHostConfig {
    */
 	protocol?: 'http' | 'https';
 
+	subpath?: string;
+
 	/**
    * Optional request option overrides.
    */
@@ -423,7 +425,8 @@ export class InfluxDB {
 					host: host.host,
 					port: host.port,
 					protocol: host.protocol,
-					options: host.options
+					options: host.options,
+					subpath: host.subpath
 				},
 				defaultHost,
 			);
@@ -433,7 +436,11 @@ export class InfluxDB {
 		this._options = defaults(resolved, defaultOptions);
 
 		resolved.hosts.forEach(host => {
-			this._pool.addHost(`${host.protocol}://${host.host}:${host.port}`, host.options);
+			let subpath = host.subpath || ''
+			if (!subpath.startsWith('/')) {
+				subpath = `/${subpath}`
+			}
+			this._pool.addHost(`${host.protocol}://${host.host}:${host.port}${subpath}`, host.options);
 		});
 
 		this._options.schema.forEach(schema => this._createSchema(schema));
